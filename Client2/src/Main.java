@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -23,6 +24,8 @@ public class Main {
 
             System.out.print("Introdueix el teu nom: ");
             String nom = new Scanner(System.in).nextLine();
+            System.out.println("Connexio Realitzada amb el servidor");
+            System.out.println("Esperant a la resta de jugadors...");
             espaiarLinies();
 
             Jugador jugador = new Jugador(nom);
@@ -41,10 +44,13 @@ public class Main {
                     lletresUtilitzades = rebreLletresUtilitzades(socket);
                     mostrarLletresUtilitzades(lletresUtilitzades);
                     System.out.print("Introduce una letra: ");
-                    String lletra = new Scanner(System.in).nextLine();
+                    String lletra = new Scanner(System.in).nextLine().toLowerCase();
                     enviarLletra(socket,lletra);
                     paraulaActual = rebreParaulaActual(socket,paraulaActual);
                     mostrarParaulaActual(paraulaActual);
+                    System.out.print("Introdueix la paraula: ");
+                    String paraula = new Scanner(System.in).nextLine().toLowerCase();
+                    enviarParaula(socket,paraula);
                     paraulaTrobada = rebreParaulaTrobada(socket);
                 }
                 espaiarLinies();
@@ -94,6 +100,16 @@ public class Main {
             OutputStream os = socket.getOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(os);
             oos.writeObject(lletra);
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+    public static void enviarParaula(Socket socket, String paraula) {
+        try {
+            OutputStream os = socket.getOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            oos.writeObject(paraula);
 
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -158,6 +174,7 @@ public class Main {
             System.out.print(err+" ");
         }
         System.out.println();
+
     }
     public static void espaiarLinies()
     {

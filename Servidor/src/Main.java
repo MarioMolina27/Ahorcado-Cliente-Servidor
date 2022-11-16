@@ -45,6 +45,7 @@ public class Main {
                 if(numClients==i){
                     i=0;
                 }
+                System.out.println("Torn del jugador: "+jugadors.get(i).getNomJugador());
                 enviarParaulaTrobada(socketsClients.get(i),paraulaTrobada);
                 enviarMissatge(socketsClients.get(i),"Es el teu torn");
                 enviarParaulaActual(socketsClients.get(i),paraulaActual);
@@ -58,8 +59,17 @@ public class Main {
 
                 enviarParaulaActual(socketsClients.get(i),paraulaActual);
 
+                String paraula = rebreParaula(socketsClients.get(i));
+                String[] paraulaIntroduida = paraula.split("");
+                String[] paraulaActualTemp = paraulaActual;
+                paraulaActual=paraulaIntroduida;
+
                 if(Arrays.equals(palabraEndevinar,paraulaActual)){
                     paraulaTrobada=true;
+                }
+                else
+                {
+                    paraulaActual=paraulaActualTemp;
                 }
                 enviarParaulaTrobada(socketsClients.get(i),paraulaTrobada);
                 i++;
@@ -80,6 +90,7 @@ public class Main {
                 }
             }
 
+            System.out.println("Partida finalitzada\n"+"Guanyador: "+jugadors.get(guanyador).getNomJugador().toUpperCase());
             server.close();
 
         } catch (Exception e) {
@@ -109,21 +120,23 @@ public class Main {
         }
         return lletra;
     }
+    public static String rebreParaula(Socket socketClient) {
+        String paraula="";
+        try {
+            InputStream is = socketClient.getInputStream();
+            ObjectInputStream ois = new ObjectInputStream(is);
+            paraula = (String) ois.readObject();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return paraula;
+    }
 
     public static void enviarNumeroConnexio(Socket socket, int numConnexio) {
         try {
             OutputStream os = socket.getOutputStream();
             DataOutputStream oos = new DataOutputStream(os);
             oos.writeInt(numConnexio);
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-    }
-    public static void enviarNumeroClients(Socket socket, int numClients) {
-        try {
-            OutputStream os = socket.getOutputStream();
-            DataOutputStream oos = new DataOutputStream(os);
-            oos.writeInt(numClients);
         } catch (Exception e) {
             System.out.println(e.toString());
         }
