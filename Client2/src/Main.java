@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -45,6 +46,13 @@ public class Main {
                     enviarLletra(socket,lletra);
                     paraulaActual = rebreParaulaActual(socket,paraulaActual);
                     mostrarParaulaActual(paraulaActual);
+                    paraulaTrobada=rebreParaulaTrobada(socket);
+                    if(!paraulaTrobada)
+                    {
+                        System.out.print("Introdueix quina paraula creus que es: ");
+                        String paraula = new Scanner(System.in).nextLine();
+                        enviarParaula(socket,paraula);
+                    }
                     paraulaTrobada = rebreParaulaTrobada(socket);
                 }
                 espaiarLinies();
@@ -94,6 +102,16 @@ public class Main {
             OutputStream os = socket.getOutputStream();
             ObjectOutputStream oos = new ObjectOutputStream(os);
             oos.writeObject(lletra);
+
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+    }
+    public static void enviarParaula(Socket socket, String paraula) {
+        try {
+            OutputStream os = socket.getOutputStream();
+            ObjectOutputStream oos = new ObjectOutputStream(os);
+            oos.writeObject(paraula);
 
         } catch (Exception e) {
             System.out.println(e.toString());
@@ -158,6 +176,7 @@ public class Main {
             System.out.print(err+" ");
         }
         System.out.println();
+
     }
     public static void espaiarLinies()
     {

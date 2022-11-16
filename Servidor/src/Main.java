@@ -45,6 +45,7 @@ public class Main {
                 if(numClients==i){
                     i=0;
                 }
+                System.out.println("Torn del jugador: "+jugadors.get(i).getNomJugador().toUpperCase());
                 enviarParaulaTrobada(socketsClients.get(i),paraulaTrobada);
                 enviarMissatge(socketsClients.get(i),"Es el teu torn");
                 enviarParaulaActual(socketsClients.get(i),paraulaActual);
@@ -60,6 +61,14 @@ public class Main {
 
                 if(Arrays.equals(palabraEndevinar,paraulaActual)){
                     paraulaTrobada=true;
+                }
+                enviarParaulaTrobada(socketsClients.get(i),paraulaTrobada);
+                if(!paraulaTrobada)
+                {
+                    String[] paraulaTemporal = rebreParaula(socketsClients.get(i)).split("");
+                    if(Arrays.equals(palabraEndevinar,paraulaTemporal)){
+                        paraulaTrobada=true;
+                    }
                 }
                 enviarParaulaTrobada(socketsClients.get(i),paraulaTrobada);
                 i++;
@@ -109,6 +118,17 @@ public class Main {
         }
         return lletra;
     }
+    public static String rebreParaula(Socket socketClient) {
+        String paraula="";
+        try {
+            InputStream is = socketClient.getInputStream();
+            ObjectInputStream ois = new ObjectInputStream(is);
+            paraula = (String) ois.readObject();
+        } catch (Exception e) {
+            System.out.println(e.toString());
+        }
+        return paraula;
+    }
 
     public static void enviarNumeroConnexio(Socket socket, int numConnexio) {
         try {
@@ -119,15 +139,7 @@ public class Main {
             System.out.println(e.toString());
         }
     }
-    public static void enviarNumeroClients(Socket socket, int numClients) {
-        try {
-            OutputStream os = socket.getOutputStream();
-            DataOutputStream oos = new DataOutputStream(os);
-            oos.writeInt(numClients);
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-    }
+
 
     public static void enviarMissatge(Socket socket, String msg) {
         try {
