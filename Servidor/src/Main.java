@@ -10,12 +10,13 @@ public class Main {
 
         try {
             ServerSocket server = new ServerSocket(PORT);
+            System.out.print("Introdueix la paraula a buscar pels jugadors: ");
+            String palabra = new Scanner (System.in).nextLine().toLowerCase();
             System.out.println("Socket servidor obert esperant connexions....");
             List<Socket> socketsClients = new ArrayList<>();
             List<Jugador> jugadors = new ArrayList<>();
 
             boolean paraulaTrobada=false;
-            String palabra = "hola";
             String[] palabraEndevinar = palabra.split("");
             String[] paraulaActual = new String[palabra.length()];
             List<String> lletresUtilitzades = new ArrayList<>();
