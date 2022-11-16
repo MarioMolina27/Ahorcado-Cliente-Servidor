@@ -7,6 +7,7 @@ import java.util.Scanner;
 
 public class Main {
     public static final int PORT = 5000;
+    public static final int ESPAIS = 5;
 
 
     public static void main(String[] args)
@@ -23,6 +24,7 @@ public class Main {
 
             System.out.print("Introdueix el teu nom: ");
             String nom = new Scanner(System.in).nextLine();
+            espaiarLinies();
 
             Jugador jugador = new Jugador(nom);
             enviarJugador(socket,jugador);
@@ -46,7 +48,7 @@ public class Main {
                     mostrarParaulaActual(paraulaActual);
                     paraulaTrobada = rebreParaulaTrobada(socket);
                 }
-
+                espaiarLinies();
             }while(!paraulaTrobada);
 
             System.out.println("LA PARTIDA HA FINALITAT");
@@ -158,5 +160,12 @@ public class Main {
         }
         System.out.println();
 
+    }
+    public static void espaiarLinies()
+    {
+        for(int i =0;i<ESPAIS;i++)
+        {
+            System.out.println();
+        }
     }
 }

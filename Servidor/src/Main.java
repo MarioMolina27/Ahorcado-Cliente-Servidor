@@ -76,7 +76,7 @@ public class Main {
                 else if(j!=guanyador)
                 {
                     enviarParaulaTrobada(socketsClients.get(j),true);
-                    enviarMissatge(socketsClients.get(j),"EL GUANYADOR ES "+jugadors.get(j).getNomJugador().toUpperCase());
+                    enviarMissatge(socketsClients.get(j),"EL GUANYADOR ES "+jugadors.get(guanyador).getNomJugador().toUpperCase());
                 }
             }
 
