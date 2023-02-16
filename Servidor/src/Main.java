@@ -1,6 +1,7 @@
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.sql.SQLOutput;
 import java.util.*;
 
 public class Main {
@@ -46,12 +47,13 @@ public class Main {
                 if(numClients==i){
                     i=0;
                 }
-                System.out.println("Torn del jugador: "+jugadors.get(i).getNomJugador().toUpperCase());
-                enviarParaulaTrobada(socketsClients.get(i),paraulaTrobada);
+                String tornActual = "Torn del jugador: "+jugadors.get(i).getNomJugador().toUpperCase();
+                System.out.println(tornActual);
+                enviarParaulaTrobada(socketsClients.get(i),paraulaTrobada); //Envia l'estat de si la paraula s'ha trobat
                 enviarMissatge(socketsClients.get(i),"Es el teu torn");
                 enviarParaulaActual(socketsClients.get(i),paraulaActual);
                 enviarLletresUtilitzades(socketsClients.get(i),lletresUtilitzades);
-                String lletra = rebreLletra(socketsClients.get(i));
+                String lletra = rebreString(socketsClients.get(i)); // Rep la lletra introduida per un usuari
                 lletresUtilitzades.add(lletra);
                 boolean lletraExisteix = comprobarExistenciaLletra(lletra,palabraEndevinar);
                 if(lletraExisteix){
@@ -66,7 +68,7 @@ public class Main {
                 enviarParaulaTrobada(socketsClients.get(i),paraulaTrobada);
                 if(!paraulaTrobada)
                 {
-                    String[] paraulaTemporal = rebreParaula(socketsClients.get(i)).split("");
+                    String[] paraulaTemporal = rebreString(socketsClients.get(i)).split(""); // Rep la paraula introduida pel jugador
                     if(Arrays.equals(palabraEndevinar,paraulaTemporal)){
                         paraulaTrobada=true;
                     }
@@ -77,6 +79,9 @@ public class Main {
             }while(!paraulaTrobada);
 
             int guanyador = i-1;
+            System.out.println("LA PARTIDA HA FINALITZAT");
+            System.out.println("EL GUANYADOR ES "+jugadors.get(guanyador).getNomJugador().toUpperCase());
+
             for(int j =0;j<numClients;j++)
             {
                 if (j==guanyador)
@@ -108,28 +113,22 @@ public class Main {
         }
         return jugador;
     }
-    public static String rebreLletra(Socket socketClient) {
-        String lletra="";
+    /**
+     * Funcio que rep un string (una lletra o una paraula)
+     */
+
+    public static String rebreString(Socket socketClient) {
+        String cadena="";
         try {
             InputStream is = socketClient.getInputStream();
             ObjectInputStream ois = new ObjectInputStream(is);
-            lletra = (String) ois.readObject();
+            cadena = (String) ois.readObject();
         } catch (Exception e) {
             System.out.println(e.toString());
         }
-        return lletra;
+        return cadena;
     }
-    public static String rebreParaula(Socket socketClient) {
-        String paraula="";
-        try {
-            InputStream is = socketClient.getInputStream();
-            ObjectInputStream ois = new ObjectInputStream(is);
-            paraula = (String) ois.readObject();
-        } catch (Exception e) {
-            System.out.println(e.toString());
-        }
-        return paraula;
-    }
+
 
     public static void enviarNumeroConnexio(Socket socket, int numConnexio) {
         try {
@@ -151,6 +150,9 @@ public class Main {
             System.out.println(e.toString());
         }
     }
+    /**
+     * Funció que envia l'estat de la paraula amb les lletres marcades (les que ha  sigut endevinades pels usuaris)
+     */
     public static void enviarParaulaActual(Socket socket, String[] paraula) {
         try {
             OutputStream os = socket.getOutputStream();
@@ -169,6 +171,9 @@ public class Main {
             System.out.println(e.toString());
         }
     }
+    /**
+     * Envia als usuaris una variable booleana que indica si la paraula s'ha trobat
+     * */
     public static void enviarParaulaTrobada(Socket socket, boolean paraulaTrobada) {
         try {
             OutputStream os = socket.getOutputStream();
